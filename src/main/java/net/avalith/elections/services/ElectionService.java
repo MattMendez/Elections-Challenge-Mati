@@ -55,13 +55,9 @@ public class ElectionService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "No se encontro la eleecion numero  "+ id));
     }
 
-    public Boolean electionInProgress(Integer id){
-        Election election = electionRepository.findById(id)
-                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "No se encontro la eleecion numero  "+ id));
+    public Boolean electionInProgress(Election election){
         LocalDateTime now = LocalDateTime.now();
-        if(now.isBefore(election.getEndDate()) && now.isAfter(election.getStarDate()))
-            return true;
-        else
-            return false;
+
+        return now.isBefore(election.getEndDate()) && now.isAfter(election.getStarDate());
     }
 }

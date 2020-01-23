@@ -2,12 +2,15 @@ package net.avalith.elections.services;
 
 import net.avalith.elections.entities.BodyVote;
 import net.avalith.elections.entities.VoteResponse;
+import net.avalith.elections.models.Election;
 import net.avalith.elections.models.Vote;
 import net.avalith.elections.repositories.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
 
 @Service
 public class VoteService {
@@ -25,9 +28,10 @@ public class VoteService {
     private CandidateService candidateService;
 
     public VoteResponse addVote(Integer electionid, String userid, BodyVote bodyVote){
-        if (electionService.electionInProgress(electionid) && !voteAlreadyExist(userid,electionid)) {
+        Election election = electionService.findById(electionid);
+        if (electionService.electionInProgress(election) && voteAlreadyExist(userid,electionid)){
             Vote vote = Vote.builder()
-                    .election(electionService.findById(electionid))
+                    .election(election)
                     .user(userService.findById(userid))
                     .candidate(candidateService.findById(bodyVote.getCandidateid()))
                     .build();
@@ -44,9 +48,11 @@ public class VoteService {
     }
 
     public Boolean voteAlreadyExist(String userid, Integer electionid){
-        if (voteRepository.findByUserAndElection(userid,electionid).isEmpty())
-            return false;
-        else
-            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "El usuario ya voto ");
+
+        return voteRepository.findByUserAndElection(userid,electionid).flatMap(
+                it -> {
+                    return Optional.of(Boolean.FALSE);
+                }
+        ).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "El voto ya existe"));
     }
 }
