@@ -1,6 +1,6 @@
 package net.avalith.elections.services;
 
-import net.avalith.elections.entities.CandidateResponse;
+import net.avalith.elections.entities.CandidateIdResponse;
 import net.avalith.elections.models.Candidate;
 import net.avalith.elections.repositories.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ public class CandidateService {
     @Autowired
     private CandidateRepository candidateRepository;
 
-    public CandidateResponse addResponse(Candidate candidate) {
+    public CandidateIdResponse addResponse(Candidate candidate) {
         candidateRepository.save(candidate);
 
-        return new CandidateResponse(candidate.getId());
+        return new CandidateIdResponse(candidate.getId());
     }
 
     public Candidate findById(Integer id){

@@ -1,12 +1,16 @@
 package net.avalith.elections.controllers;
 
-import net.avalith.elections.entities.CandidateResponse;
+import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
+import net.avalith.elections.entities.CandidateIdResponse;
+import net.avalith.elections.entities.CandidateInfoResponse;
 import net.avalith.elections.models.Candidate;
 import net.avalith.elections.services.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -19,8 +23,19 @@ public class CandidateController {
     CandidateService candidateService;
 
     @PostMapping("")
-    public CandidateResponse addCandidate(@Valid @RequestBody Candidate candidate){
+    public CandidateIdResponse addCandidate(@Valid @RequestBody Candidate candidate){
 
         return candidateService.addResponse(candidate);
+    }
+
+    @GetMapping("")
+    public CandidateInfoResponse showCandidate(@RequestParam Integer id){
+        Candidate candidate = candidateService.findById(id);
+
+        return CandidateInfoResponse.builder()
+                .id(candidate.getId())
+                .firstname(candidate.getName())
+                .lastname(candidate.getLastName())
+                .build();
     }
 }
