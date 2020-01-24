@@ -7,11 +7,15 @@ import net.avalith.elections.entities.VoteResponse;
 import net.avalith.elections.services.ElectionService;
 import net.avalith.elections.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -21,7 +25,10 @@ import javax.validation.Valid;
 public class ElectionController {
 
     @Autowired
-    ElectionService electionService;
+    private ElectionService electionService;
+
+    @Autowired
+    private VoteService voteService;
 
     @PostMapping("")
     public ElectionResponse electionResponse(@Valid @RequestBody BodyElections bodyElections){
@@ -29,14 +36,17 @@ public class ElectionController {
         return electionService.addElection(bodyElections);
     }
 
-    @Autowired
-    private VoteService voteService;
-
     @PostMapping("/{id_election}/vote")
     public VoteResponse voteResponse(@PathVariable(name = "id_election") Integer electionid,
                                      @RequestHeader("USER_ID") String userid,
                                      @Valid @RequestBody BodyVote bodyVote){
 
         return voteService.addVote(electionid,userid,bodyVote);
+    }
+
+    @ResponseStatus(value = HttpStatus.CONFLICT,
+            reason = "Inserting a vote that already exist")
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public void conflict() {
     }
 }

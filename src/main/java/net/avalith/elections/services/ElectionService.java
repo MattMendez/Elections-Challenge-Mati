@@ -37,7 +37,7 @@ public class ElectionService {
                     .collect(Collectors.toList());
 
             Election election = Election.builder()
-                    .starDate(bodyElections.getStarDate())
+                    .startDate(bodyElections.getStarDate())
                     .endDate(bodyElections.getEndDate())
                     .build();
 
@@ -58,6 +58,6 @@ public class ElectionService {
     public Boolean electionInProgress(Election election){
         LocalDateTime now = LocalDateTime.now();
 
-        return now.isBefore(election.getEndDate()) && now.isAfter(election.getStarDate());
+        return now.isBefore(election.getEndDate()) && now.isAfter(election.getStartDate());
     }
 }

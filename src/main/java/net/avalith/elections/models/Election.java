@@ -34,7 +34,7 @@ public class Election {
     @NotNull(message = "No se ingreso fecha y hora")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @FutureOrPresent
-    private LocalDateTime starDate;
+    private LocalDateTime startDate;
 
     @JsonProperty("end_date")
     @NotNull(message = "No se ingreso fecha y hora")

@@ -20,7 +20,7 @@ import javax.validation.Valid;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @PostMapping("")
     public UserAddResponse AddUser(@Valid @RequestBody User user) {

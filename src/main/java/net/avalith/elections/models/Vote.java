@@ -12,12 +12,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(
+        uniqueConstraints =
+                @UniqueConstraint(columnNames = {"user_id", "election_id"})
+)
 public class Vote {
 
     @Id
@@ -38,5 +44,4 @@ public class Vote {
     @JoinColumn(name = "user_id",
             referencedColumnName = "id")
     private User user;
-
 }

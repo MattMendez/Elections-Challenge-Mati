@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
-
 @Service
 public class VoteService {
 
@@ -29,13 +27,14 @@ public class VoteService {
 
     public VoteResponse addVote(Integer electionid, String userid, BodyVote bodyVote){
         Election election = electionService.findById(electionid);
-        if (electionService.electionInProgress(election) && voteAlreadyExist(userid,electionid)){
+        if (electionService.electionInProgress(election)){
             Vote vote = Vote.builder()
                     .election(election)
                     .user(userService.findById(userid))
                     .candidate(candidateService.findById(bodyVote.getCandidateid()))
                     .build();
             voteRepository.save(vote);
+
             return new VoteResponse("Voto ingresado con éxito");
         }else
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "La eleccion numero "+ electionid + " ya finalizo");
@@ -44,15 +43,6 @@ public class VoteService {
     public Vote findById(Integer id){
 
         return  voteRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "No se encontro el voto numero  "+ id));
-    }
-
-    public Boolean voteAlreadyExist(String userid, Integer electionid){
-
-        return voteRepository.findByUserAndElection(userid,electionid).flatMap(
-                it -> {
-                    return Optional.of(Boolean.FALSE);
-                }
-        ).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "El voto ya existe"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "No se encontro el voto"));
     }
 }
