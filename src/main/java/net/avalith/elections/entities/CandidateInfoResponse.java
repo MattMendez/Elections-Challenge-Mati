@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CandidateInfoResponse {
 
-    @JsonProperty("id")
     private Integer id;
 
     @JsonProperty("first_name")

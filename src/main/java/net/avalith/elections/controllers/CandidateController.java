@@ -20,7 +20,7 @@ import javax.validation.Valid;
 public class CandidateController {
 
     @Autowired
-    CandidateService candidateService;
+    private CandidateService candidateService;
 
     @PostMapping("")
     public CandidateIdResponse addCandidate(@Valid @RequestBody Candidate candidate){
@@ -29,13 +29,8 @@ public class CandidateController {
     }
 
     @GetMapping("")
-    public CandidateInfoResponse showCandidate(@RequestParam Integer id){
-        Candidate candidate = candidateService.findById(id);
+    public CandidateInfoResponse getCandidate(@RequestParam Integer id){
 
-        return CandidateInfoResponse.builder()
-                .id(candidate.getId())
-                .firstname(candidate.getName())
-                .lastname(candidate.getLastName())
-                .build();
+        return  candidateService.showCandidate(id);
     }
 }
