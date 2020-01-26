@@ -36,16 +36,10 @@ public class Candidate {
     @JsonProperty("last_name")
     @NotBlank(message = "El apellido esta vacio")
     @Size(max = 30, message = "El apellido debe tener como maximo 30 caracteres")
-    private String lastName;
+    private String lastname;
 
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "candidate")
     private List<ElectionsCandidates> elections;
-
-    @OneToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "candidate")
-    private List<Vote> vote;
-
 }

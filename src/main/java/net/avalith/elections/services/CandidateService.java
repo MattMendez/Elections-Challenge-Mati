@@ -33,7 +33,7 @@ public class CandidateService {
         return CandidateInfoResponse.builder()
                 .id(candidate.getId())
                 .firstname(candidate.getName())
-                .lastname(candidate.getLastName())
+                .lastname(candidate.getLastname())
                 .build();
     }
 }

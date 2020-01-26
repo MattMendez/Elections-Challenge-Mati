@@ -3,6 +3,7 @@ package net.avalith.elections.controllers;
 import net.avalith.elections.entities.BodyElections;
 import net.avalith.elections.entities.BodyVote;
 import net.avalith.elections.entities.ElectionResponse;
+import net.avalith.elections.entities.ElectionResultsResponse;
 import net.avalith.elections.entities.VoteResponse;
 import net.avalith.elections.services.ElectionService;
 import net.avalith.elections.services.VoteService;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,4 +51,11 @@ public class ElectionController {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public void conflict() {
     }
+
+    @GetMapping("/{id_election}")
+    public ElectionResultsResponse getResults(@PathVariable("id_election") Integer id){
+
+        return electionService.getResults(id);
+    }
+
 }

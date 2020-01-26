@@ -3,6 +3,7 @@ package net.avalith.elections.services;
 import net.avalith.elections.entities.BodyVote;
 import net.avalith.elections.entities.VoteResponse;
 import net.avalith.elections.models.Election;
+import net.avalith.elections.models.ElectionsCandidates;
 import net.avalith.elections.models.Vote;
 import net.avalith.elections.repositories.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,14 @@ public class VoteService {
 
     public VoteResponse addVote(Integer electionid, String userid, BodyVote bodyVote){
         Election election = electionService.findById(electionid);
+        ElectionsCandidates electionsCandidates = election.getElectionsCandidates().stream().filter(
+                it -> it.getCandidate().getId() == bodyVote.getCandidateid()
+        ).findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"El candidato no participa de la eleccion"));
+
         if (electionService.electionInProgress(election)){
             Vote vote = Vote.builder()
-                    .election(election)
+                    .electionsCandidates(electionsCandidates)
                     .user(userService.findById(userid))
-                    .candidate(candidateService.findById(bodyVote.getCandidateid()))
                     .build();
             voteRepository.save(vote);
 
