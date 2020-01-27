@@ -1,5 +1,6 @@
 package net.avalith.elections.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,9 +14,11 @@ public class CandidateWithVotes {
 
     private Integer id;
 
-    private String first_name;
+    @JsonProperty("first_name")
+    private String firstName;
 
-    private String last_name;
+    @JsonProperty("last_name")
+    private String lastName;
 
     private  Long votes;
 }
