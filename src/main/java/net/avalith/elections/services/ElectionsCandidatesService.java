@@ -18,14 +18,12 @@ public class ElectionsCandidatesService {
     }
 
     public CandidateWithVotes buildCandidateWithVotes(ElectionsCandidates electionsCandidates){
-        CandidateWithVotes candidateWithVotes = CandidateWithVotes.builder()
+        return CandidateWithVotes.builder()
                 .id(electionsCandidates.getCandidate().getId())
-                .lastname(electionsCandidates.getCandidate().getLastname())
+                .lastname(electionsCandidates.getCandidate().getLastName())
                 .name(electionsCandidates.getCandidate().getName())
                 .votes(electionsCandidates.getVotes().stream().filter(
                         it -> it.getElectionsCandidates().getCandidate().getId() == electionsCandidates.getCandidate().getId()).count())
                 .build();
-
-        return candidateWithVotes;
     }
 }

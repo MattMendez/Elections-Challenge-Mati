@@ -66,9 +66,8 @@ public class ElectionService {
     public ElectionResultsResponse getResults(Integer id){
         Election election = findById(id);
 
-        List<CandidateWithVotes> candidateWithVotes = election.getElectionsCandidates().stream().map(
-                it -> electionsCandidatesService.buildCandidateWithVotes(it)
-        )
+        List<CandidateWithVotes> candidateWithVotes = election.getElectionsCandidates().stream()
+                .map(it -> electionsCandidatesService.buildCandidateWithVotes(it))
                 .sorted((candidateWithVotes1, it) ->it.getVotes().compareTo(candidateWithVotes1.getVotes()))
                 .collect(Collectors.toList());
 

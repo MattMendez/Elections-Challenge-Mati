@@ -36,7 +36,7 @@ public class Candidate {
     @JsonProperty("last_name")
     @NotBlank(message = "El apellido esta vacio")
     @Size(max = 30, message = "El apellido debe tener como maximo 30 caracteres")
-    private String lastname;
+    private String lastName;
 
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
