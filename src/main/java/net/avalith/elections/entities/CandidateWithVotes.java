@@ -13,9 +13,9 @@ public class CandidateWithVotes {
 
     private Integer id;
 
-    private String name;
+    private String first_name;
 
-    private String lastname;
+    private String last_name;
 
     private  Long votes;
 }

@@ -20,10 +20,10 @@ public class ElectionsCandidatesService {
     public CandidateWithVotes buildCandidateWithVotes(ElectionsCandidates electionsCandidates){
         return CandidateWithVotes.builder()
                 .id(electionsCandidates.getCandidate().getId())
-                .lastname(electionsCandidates.getCandidate().getLastName())
-                .name(electionsCandidates.getCandidate().getName())
+                .last_name(electionsCandidates.getCandidate().getLastName())
+                .first_name(electionsCandidates.getCandidate().getName())
                 .votes(electionsCandidates.getVotes().stream().filter(
-                        it -> it.getElectionsCandidates().getCandidate().getId() == electionsCandidates.getCandidate().getId()).count())
+                        candidate -> candidate.getElectionsCandidates().getCandidate().getId() == electionsCandidates.getCandidate().getId()).count())
                 .build();
     }
 }
