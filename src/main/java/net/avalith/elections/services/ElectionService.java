@@ -1,7 +1,9 @@
 package net.avalith.elections.services;
 
 import net.avalith.elections.entities.BodyElections;
+import net.avalith.elections.entities.CandidateWithVotes;
 import net.avalith.elections.entities.ElectionResponse;
+import net.avalith.elections.entities.ElectionResultsResponse;
 import net.avalith.elections.models.Candidate;
 import net.avalith.elections.models.Election;
 import net.avalith.elections.models.ElectionsCandidates;
@@ -59,5 +61,22 @@ public class ElectionService {
         LocalDateTime now = LocalDateTime.now();
 
         return now.isBefore(election.getEndDate()) && now.isAfter(election.getStartDate());
+    }
+
+    public ElectionResultsResponse getResults(Integer id){
+        Election election = findById(id);
+
+        List<CandidateWithVotes> candidateWithVotes = election.getElectionsCandidates().stream()
+                .map(it -> electionsCandidatesService.buildCandidateWithVotes(it))
+                .sorted((candidateWithVotes1, it) ->it.getVotes().compareTo(candidateWithVotes1.getVotes()))
+                .collect(Collectors.toList());
+
+        return  ElectionResultsResponse.builder()
+                .id(id)
+                .candidateWithVotes(candidateWithVotes)
+                .totalVotes(candidateWithVotes.stream().mapToLong(
+                        it -> it.getVotes()
+                ).sum())
+                .build();
     }
 }

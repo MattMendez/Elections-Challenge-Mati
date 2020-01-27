@@ -22,7 +22,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(
         uniqueConstraints =
-                @UniqueConstraint(columnNames = {"user_id", "election_id"})
+                @UniqueConstraint(columnNames = {"user_id", "electionscandidates_id"})
 )
 public class Vote {
 
@@ -31,14 +31,9 @@ public class Vote {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "election_id",
+    @JoinColumn(name = "electionscandidates_id",
             referencedColumnName = "id")
-    private Election election;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "candidate_id",
-            referencedColumnName = "id")
-    private Candidate candidate;
+    private ElectionsCandidates electionsCandidates;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id",

@@ -42,10 +42,4 @@ public class Candidate {
             cascade = CascadeType.ALL,
             mappedBy = "candidate")
     private List<ElectionsCandidates> elections;
-
-    @OneToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "candidate")
-    private List<Vote> vote;
-
 }
