@@ -39,12 +39,14 @@ public class User {
 
     @Column(unique = true)
     @NotBlank(message = "El Email es necesario")
-    @Email(message =  "El Email debe ser valido")
-    private  String email;
+    @Email(message = "El Email debe ser valido")
+    private String email;
 
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "user")
     private List<Vote> vote;
 
+    @Builder.Default()
+    private Boolean isFake = false;
 }

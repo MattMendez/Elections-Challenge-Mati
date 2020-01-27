@@ -1,5 +1,7 @@
 package net.avalith.elections.controllers;
 
+import net.avalith.elections.entities.BodyFakeUser;
+import net.avalith.elections.entities.FakeUserResponse;
 import net.avalith.elections.entities.UserAddResponse;
 import net.avalith.elections.models.User;
 import net.avalith.elections.services.UserService;
@@ -33,4 +35,11 @@ public class UserController {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public void conflict() {
     }
+
+    @PostMapping("/fake")
+    public FakeUserResponse addFakeUsers(@Valid @RequestBody BodyFakeUser bodyFakeUser){
+
+        return userService.addFakeUsers(bodyFakeUser.getQuantity());
+    }
+
 }
