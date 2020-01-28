@@ -41,5 +41,4 @@ public class UserController {
 
         return userService.addFakeUsers(bodyFakeUser.getQuantity());
     }
-
 }

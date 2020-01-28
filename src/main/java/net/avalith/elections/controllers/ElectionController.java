@@ -1,9 +1,11 @@
 package net.avalith.elections.controllers;
 
 import net.avalith.elections.entities.BodyElections;
+import net.avalith.elections.entities.BodyFakeVote;
 import net.avalith.elections.entities.BodyVote;
 import net.avalith.elections.entities.ElectionResponse;
 import net.avalith.elections.entities.ElectionResultsResponse;
+import net.avalith.elections.entities.FakeUserResponse;
 import net.avalith.elections.entities.VoteResponse;
 import net.avalith.elections.services.ElectionService;
 import net.avalith.elections.services.VoteService;
@@ -58,4 +60,10 @@ public class ElectionController {
         return electionService.getResults(id);
     }
 
+    @PostMapping("/fake/{id_election}")
+    public FakeUserResponse createFakeVotes(@PathVariable(name = "id_election") Integer electionid,
+                                         @RequestBody BodyFakeVote bodyFakeVote){
+
+        return  voteService.addFakeVotes(electionid,bodyFakeVote);
+    }
 }

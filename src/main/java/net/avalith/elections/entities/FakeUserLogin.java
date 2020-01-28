@@ -6,21 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FakeUserResults {
+public class FakeUserLogin {
 
-    @JsonProperty("name")
-    private FakeUserName fakeUserName;
-
-    @JsonProperty("email")
-    @Email
-    private String email;
-
-    @JsonProperty("login")
-    private FakeUserLogin fakeUserLogin;
+    @JsonProperty("uuid")
+    private String id;
 }
