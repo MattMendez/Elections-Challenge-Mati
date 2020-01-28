@@ -1,6 +1,5 @@
 package net.avalith.elections.services;
 
-import net.avalith.elections.configurations.Config;
 import net.avalith.elections.entities.FakeUser;
 import net.avalith.elections.entities.FakeUserResponse;
 import net.avalith.elections.entities.UserAddResponse;
@@ -45,7 +44,7 @@ public class UserService {
         FakeUser fakeUser = restTemplate.getForObject(fakeUserUrl + "?results=" + quantity, FakeUser.class);
         fakeUser.getFakeUserResults().parallelStream().forEach(
                 fake -> userRepository.save( User.builder()
-                        .id(UUID.randomUUID().toString())
+                        .id(fake.getFakeUserLogin().getId())
                         .email(fake.getEmail())
                         .name(fake.getFakeUserName().getFirstName())
                         .lastName(fake.getFakeUserName().getLastName())

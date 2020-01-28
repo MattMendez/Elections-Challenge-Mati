@@ -68,7 +68,7 @@ public class VoteService {
 
         if (electionService.electionInProgress(election)) {
             List<User> usuariosFalsos = userService.findAllFakeUsers();
-            usuariosFalsos.stream().forEach(
+            usuariosFalsos.parallelStream().forEach(
                     it -> {
                         try {
                             voteRepository.save(Vote.builder()
