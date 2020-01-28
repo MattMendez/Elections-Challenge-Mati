@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -42,15 +43,20 @@ public class UserService {
 
     public FakeUserResponse addFakeUsers(Integer quantity){
         FakeUser fakeUser = restTemplate.getForObject(fakeUserUrl + "?results=" + quantity, FakeUser.class);
-        fakeUser.getFakeUserResults().stream().forEach(
+        fakeUser.getFakeUserResults().parallelStream().forEach(
                 fake -> userRepository.save( User.builder()
                         .id(UUID.randomUUID().toString())
                         .email(fake.getEmail())
                         .name(fake.getFakeUserName().getFirstName())
                         .lastName(fake.getFakeUserName().getLastName())
                         .isFake(true)
-                        .build() )
+                        .build())
         );
         return new FakeUserResponse(quantity + " Usuarios creados correctamente");
+    }
+
+    public List<User> findAllFakeUsers(){
+
+        return userRepository.findFakeUsers();
     }
 }
