@@ -79,4 +79,9 @@ public class ElectionService {
                 ).sum())
                 .build();
     }
+
+    public List<Election> findElectionsInProgress() {
+
+        return electionRepository.findInProgressElections(LocalDateTime.now());
+    }
 }

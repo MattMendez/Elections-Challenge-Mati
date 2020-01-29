@@ -11,7 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,7 +26,9 @@ public class ElectionHistories {
 
     private Integer electionId;
 
-    private CandidateWithVotes winningCandidate;
+    private String fullName;
+
+    private Long votes;
 
     private Float votePercentage;
 
