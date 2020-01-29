@@ -95,4 +95,11 @@ public class VoteService {
 
         return user.getVote().stream().noneMatch(it-> it.getElectionsCandidates().getElection().getId() == electionId);
     }
+
+    public Double getTotalVotes(List<ElectionsCandidates> electionsCandidates){
+
+        return electionsCandidates.stream().mapToDouble(
+                x -> x.getVotes().size())
+                .sum();
+    }
 }

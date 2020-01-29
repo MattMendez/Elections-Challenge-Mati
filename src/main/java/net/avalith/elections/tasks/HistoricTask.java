@@ -6,6 +6,7 @@ import net.avalith.elections.models.ElectionHistories;
 import net.avalith.elections.repositories.ElectionHistoriesRepository;
 import net.avalith.elections.services.ElectionService;
 import net.avalith.elections.services.ElectionsCandidatesService;
+import net.avalith.elections.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -28,6 +29,9 @@ public class HistoricTask {
     @Autowired
     private ElectionHistoriesRepository electionHistoriesRepository;
 
+    @Autowired
+    private VoteService voteService;
+
     @Scheduled(fixedRateString = "${fixedRate}")
     public void addHistoric() {
         List<Election> elections = electionService.findElectionsInProgress();
@@ -40,9 +44,7 @@ public class HistoricTask {
                             .localDateTime(LocalDateTime.now())
                             .fullName(ec.getFirstName() + ' ' +ec.getLastName())
                             .votes(ec.getVotes())
-                            .votePercentage( (ec.getVotes() * 100 ) / ((float) it.getElectionsCandidates().stream().mapToDouble(
-                                    x -> (float) x.getVotes().size())
-                                    .sum()))
+                            .votePercentage( (ec.getVotes() * 100 ) / voteService.getTotalVotes(it.getElectionsCandidates()).floatValue())
                             .build();}
         ).collect(Collectors.toList());
         electionHistories.stream().forEach(

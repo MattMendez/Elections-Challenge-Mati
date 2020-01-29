@@ -33,13 +33,7 @@ public class ElectionsCandidatesService {
     public CandidateWithVotes findWinningCandidate(List<ElectionsCandidates> electionsCandidates){
 
         return electionsCandidates.stream().map(
-                it -> CandidateWithVotes.builder()
-                        .id(it.getCandidate().getId())
-                        .lastName(it.getCandidate().getLastName())
-                        .firstName(it.getCandidate().getName())
-                        .votes(it.getVotes().stream().filter(
-                                candidate -> candidate.getElectionsCandidates().getCandidate().getId() == it.getCandidate().getId()).count())
-                        .build()
+                it -> buildCandidateWithVotes(it)
         ).sorted((candidateWithVotes1, it) ->it.getVotes().compareTo(candidateWithVotes1.getVotes())).findFirst().orElseThrow();
     }
 }
