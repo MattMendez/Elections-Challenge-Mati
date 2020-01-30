@@ -41,11 +41,12 @@ public class VoteService {
         ElectionsCandidates electionsCandidates = election.getElectionsCandidates().stream().filter(
                 it -> it.getCandidate().getId() == bodyVote.getCandidateid()
         ).findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "El candidato no participa de la eleccion"));
+        User user = userService.findById(userid);
 
-        if (electionService.electionInProgress(election)) {
+        if (electionService.electionInProgress(election) && didNotVote(electionid, user)) {
             Vote vote = Vote.builder()
                     .electionsCandidates(electionsCandidates)
-                    .user(userService.findById(userid))
+                    .user(user)
                     .build();
             voteRepository.save(vote);
 
@@ -68,22 +69,37 @@ public class VoteService {
 
         if (electionService.electionInProgress(election)) {
             List<User> usuariosFalsos = userService.findAllFakeUsers();
-            usuariosFalsos.parallelStream().forEach(
+
+            usuariosFalsos.stream()
+                    .filter(it -> didNotVote(electionid, it))
+                    .forEach(
                     it -> {
-                        try {
-                            voteRepository.save(Vote.builder()
-                                    .user(it)
-                                    .electionsCandidates(electionsCandidates)
-                                    .build());
+                            try {
+                                voteRepository.save(Vote.builder()
+                                        .user(it)
+                                        .electionsCandidates(electionsCandidates)
+                                        .build());
+                            }
+                            catch (DataIntegrityViolationException e) {
+                                logger.info("No se creo un voto del usuario " +it.getId());
+                            }
                         }
-                        catch (DataIntegrityViolationException e) {
-                            logger.info("No se creo un voto del usuario " +it.getId());
-                        }
-                    }
-            );
+                    );
 
             return new FakeUserResponse("Votos generados correctamente");
         } else
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La eleccion numero " + electionid + " no esta en progeso");
+    }
+
+    public Boolean didNotVote(Integer electionId, User user){
+
+        return user.getVote().stream().noneMatch(it-> it.getElectionsCandidates().getElection().getId() == electionId);
+    }
+
+    public Double getTotalVotes(List<ElectionsCandidates> electionsCandidates){
+
+        return electionsCandidates.stream().mapToDouble(
+                x -> x.getVotes().size())
+                .sum();
     }
 }

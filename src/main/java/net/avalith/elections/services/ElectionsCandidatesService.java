@@ -6,6 +6,8 @@ import net.avalith.elections.repositories.ElectionsCandidatesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ElectionsCandidatesService {
 
@@ -18,6 +20,7 @@ public class ElectionsCandidatesService {
     }
 
     public CandidateWithVotes buildCandidateWithVotes(ElectionsCandidates electionsCandidates){
+
         return CandidateWithVotes.builder()
                 .id(electionsCandidates.getCandidate().getId())
                 .lastName(electionsCandidates.getCandidate().getLastName())
@@ -25,5 +28,12 @@ public class ElectionsCandidatesService {
                 .votes(electionsCandidates.getVotes().stream().filter(
                         candidate -> candidate.getElectionsCandidates().getCandidate().getId() == electionsCandidates.getCandidate().getId()).count())
                 .build();
+    }
+
+    public CandidateWithVotes findWinningCandidate(List<ElectionsCandidates> electionsCandidates){
+
+        return electionsCandidates.stream().map(
+                it -> buildCandidateWithVotes(it)
+        ).sorted((candidateWithVotes1, it) ->it.getVotes().compareTo(candidateWithVotes1.getVotes())).findFirst().orElseThrow();
     }
 }
