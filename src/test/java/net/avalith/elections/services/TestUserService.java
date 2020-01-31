@@ -1,4 +1,4 @@
-package net.avalith.elections.tests;
+package net.avalith.elections.services;
 
 import net.avalith.elections.entities.FakeUser;
 import net.avalith.elections.entities.FakeUserLogin;
@@ -8,17 +8,14 @@ import net.avalith.elections.entities.FakeUserResults;
 import net.avalith.elections.entities.UserAddResponse;
 import net.avalith.elections.models.User;
 import net.avalith.elections.repositories.UserRepository;
-import net.avalith.elections.services.UserService;
 import net.avalith.elections.utilities.Utilities;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestExecutionListeners;
@@ -26,8 +23,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -35,14 +30,20 @@ import java.util.List;
 @TestExecutionListeners(DependencyInjectionTestExecutionListener.class)
 public class TestUserService {
 
-    @InjectMocks
+    @Autowired
     UserService userService;
 
+    @Autowired
     @MockBean
     UserRepository userRepository;
 
+    @Autowired
     @MockBean
     RestTemplate restTemplate;
+
+    @Autowired
+    @MockBean
+    private Utilities utilities;
 
     @Before
     public void init() {
@@ -64,7 +65,7 @@ public class TestUserService {
 
         //Test
         //Cuando haga algo, va a recibir lo otro, simula el proceso
-        Mockito.when(Utilities.getRandomUuid()).thenReturn(id);
+        Mockito.when(utilities.getRandomUuid()).thenReturn(id);
 
         Mockito.when(userRepository.save(testUser)).thenReturn(testUser);
         //Creo la respuesta, llamando a el metodo que me la deberia dar y es el metodo que estoy probando
@@ -151,6 +152,24 @@ public class TestUserService {
         FakeUserResponse fakeUserResponse = userService.addFakeUsers(quantity);
 
         Assert.assertEquals(testResponse, fakeUserResponse);
+    }
+
+    @Test
+    public void findAllFakeUsersTest(){
+
+        List<User> fakeUsersTest = List.of( User.builder()
+                .id("a1938076-ec51-4b41-a5af-da58e57b578f")
+                .name("Pepa")
+                .lastName("Pig")
+                .email("pepa@pig.com")
+                .isFake(true)
+                .build());
+
+        Mockito.when(userRepository.findFakeUsers()).thenReturn(fakeUsersTest);
+
+        List<User> fakeUsers = userRepository.findFakeUsers();
+
+        Assert.assertEquals(fakeUsersTest, fakeUsers);
     }
 }
 
