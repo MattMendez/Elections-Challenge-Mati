@@ -41,6 +41,7 @@ public class VoteService {
         ElectionsCandidates electionsCandidates = election.getElectionsCandidates().stream().filter(
                 it -> it.getCandidate().getId() == bodyVote.getCandidateid()
         ).findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "El candidato no participa de la eleccion"));
+
         User user = userService.findById(userid);
 
         if (electionService.electionInProgress(election) && didNotVote(electionid, user)) {

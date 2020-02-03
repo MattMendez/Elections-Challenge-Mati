@@ -16,9 +16,8 @@ public class CandidateService {
     private CandidateRepository candidateRepository;
 
     public CandidateIdResponse addResponse(Candidate candidate) {
-        candidateRepository.save(candidate);
 
-        return new CandidateIdResponse(candidate.getId());
+        return new CandidateIdResponse(candidateRepository.save(candidate).getId());
     }
 
     public Candidate findById(Integer id){
