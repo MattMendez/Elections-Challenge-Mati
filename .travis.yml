@@ -5,3 +5,5 @@ cache:
   - $HOME/.m2
 services:
   - mysql
+before_install:
+  - sudo mysql -e 'CREATE DATABASE avalith'
