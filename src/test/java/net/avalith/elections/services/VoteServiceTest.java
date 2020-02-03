@@ -1,6 +1,8 @@
 package net.avalith.elections.services;
 
+import net.avalith.elections.entities.BodyFakeVote;
 import net.avalith.elections.entities.BodyVote;
+import net.avalith.elections.entities.FakeUserResponse;
 import net.avalith.elections.entities.VoteResponse;
 import net.avalith.elections.models.Candidate;
 import net.avalith.elections.models.Election;
@@ -188,11 +190,19 @@ public class VoteServiceTest {
         
         Mockito.when(userService.findAllFakeUsers()).thenReturn(fakeUserList);
 
+        Vote vote = Vote.builder()
+                .user(testUser)
+                .electionsCandidates(electionsCandidates)
+                .build();
 
+        Vote voteReturn = Vote.builder()
+                .id(1)
+                .user(testUser)
+                .electionsCandidates(electionsCandidates)
+                .build();
 
+        Mockito.when(voteRepository.save(vote)).thenReturn(voteReturn);
 
-
+        Assert.assertEquals(new FakeUserResponse("Votos generados correctamente"), voteService.addFakeVotes(electionId, new BodyFakeVote(1)));
     }
 }
-
-
