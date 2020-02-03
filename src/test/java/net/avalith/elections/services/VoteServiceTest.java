@@ -175,9 +175,22 @@ public class VoteServiceTest {
         Mockito.when(electionService.findById(electionId)).thenReturn(election);
         Mockito.when(electionService.electionInProgress(election)).thenReturn(true);
 
+        User testUser = User.builder()
+                .id("e1938076-ec51-4b41-a5af-da58e57b578f")
+                .name("pepe")
+                .lastName("argento")
+                .email("elpepe@argento.com")
+                .vote(List.of())
+                .isFake(true)
+                .build();
 
+        List<User> fakeUserList = List.of(testUser);
         
-        Mockito.when(userService.findAllFakeUsers()).thenReturn();
+        Mockito.when(userService.findAllFakeUsers()).thenReturn(fakeUserList);
+
+
+
+
 
     }
 }
