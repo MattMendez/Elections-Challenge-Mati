@@ -176,6 +176,8 @@ public class VoteServiceTest {
         Mockito.when(electionService.electionInProgress(election)).thenReturn(true);
 
 
+        
+        Mockito.when(userService.findAllFakeUsers()).thenReturn();
 
     }
 }
