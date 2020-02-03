@@ -6,4 +6,4 @@ cache:
 services:
   - mysql
 before_install:
-  - sudo mysql -e 'CREATE DATABASE avalith'
+  - mysql -e 'CREATE DATABASE avalith;'
