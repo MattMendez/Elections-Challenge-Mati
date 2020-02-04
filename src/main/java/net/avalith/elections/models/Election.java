@@ -1,6 +1,8 @@
 package net.avalith.elections.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,6 +45,8 @@ public class Election {
     private LocalDateTime endDate;
 
     @ToString.Exclude
+    @JsonIgnore
+    @JsonBackReference
     @JsonProperty("candidate_ids")
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,

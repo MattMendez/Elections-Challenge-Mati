@@ -9,6 +9,7 @@ import net.avalith.elections.models.ElectionsCandidates;
 import net.avalith.elections.models.User;
 import net.avalith.elections.models.Vote;
 import net.avalith.elections.repositories.VoteRepository;
+import net.avalith.elections.utilities.Utilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,14 @@ public class VoteService {
     @Autowired
     private CandidateService candidateService;
 
+    @Autowired
+    private Utilities utilities;
+
     private final Logger logger = LoggerFactory.getLogger(VoteService.class);
 
     public VoteResponse addVote(Integer electionid, String userid, BodyVote bodyVote) {
         Election election = electionService.findById(electionid);
+
         ElectionsCandidates electionsCandidates = election.getElectionsCandidates().stream().filter(
                 it -> it.getCandidate().getId() == bodyVote.getCandidateid()
         ).findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "El candidato no participa de la eleccion"));

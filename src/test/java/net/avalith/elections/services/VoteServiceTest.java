@@ -1,5 +1,6 @@
 package net.avalith.elections.services;
 
+import io.github.benas.randombeans.api.EnhancedRandom;
 import net.avalith.elections.entities.BodyFakeVote;
 import net.avalith.elections.entities.BodyVote;
 import net.avalith.elections.entities.FakeUserResponse;
@@ -13,8 +14,12 @@ import net.avalith.elections.repositories.VoteRepository;
 import net.avalith.elections.utilities.Utilities;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,6 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -49,9 +55,17 @@ public class VoteServiceTest {
     @MockBean
     UserService userService;
 
+    private final Logger logger = LoggerFactory.getLogger(VoteServiceTest.class);
+
+    @BeforeEach
+    public void init() {
+        MockitoAnnotations.initMocks(VoteServiceTest.class);
+    }
 
     @Test
     public void addVoteTest(){
+
+        Mockito.reset(electionService);
         Integer electionId = 1;
         String userId = "e1938076-ec51-4b41-a5af-da58e57b578f";
         BodyVote bodyVote = BodyVote.builder()
@@ -76,7 +90,7 @@ public class VoteServiceTest {
                 .candidate(candidate)
                 .build();
 
-        election.setElectionsCandidates(List.of(electionsCandidates));
+        election.setElectionsCandidates(Arrays.asList(electionsCandidates));
 
         Mockito.when(electionService.findById(electionId)).thenReturn(election);
 
@@ -85,11 +99,11 @@ public class VoteServiceTest {
                 .name("pepe")
                 .lastName("argento")
                 .email("elpepe@argento.com")
-                .vote(List.of())
+                .vote(Arrays.asList(EnhancedRandom.random(Vote.class)))
                 .build();
 
         Mockito.when(userService.findById(userId)).thenReturn(testUser);
-        Mockito.when(electionService.electionInProgress(election)).thenReturn(true);
+        Mockito.when(electionService.electionInProgress(election)).thenReturn(Boolean.TRUE);
 
         Vote vote = Vote.builder()
                 .electionsCandidates(electionsCandidates)
@@ -102,6 +116,7 @@ public class VoteServiceTest {
                 .user(testUser)
                 .build();
 
+        Mockito.reset(voteRepository);
         Mockito.when(voteRepository.save(vote)).thenReturn(voteReturn);
 
         Assert.assertEquals(new VoteResponse("Voto ingresado con éxito"), voteService.addVote(electionId, userId, bodyVote));

@@ -39,6 +39,7 @@ public class ElectionsCandidates {
             referencedColumnName = "id")
     private Candidate candidate;
 
+    @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "electionsCandidates")
