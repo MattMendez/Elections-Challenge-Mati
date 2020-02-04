@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -75,6 +76,13 @@ public class TestCandidateService {
         Mockito.when(candidateRepository.findById(id)).thenReturn(testCandidate);
 
         Assert.assertEquals(testCandidate,candidateRepository.findById(id));
+    }
+
+    @Test(expected = ResponseStatusException.class)
+    public void findByIdTestFail(){
+        Integer id = 1;
+        Mockito.when(candidateRepository.findById(id)).thenReturn(Optional.empty());
+        candidateService.findById(id);
     }
 
     @Test

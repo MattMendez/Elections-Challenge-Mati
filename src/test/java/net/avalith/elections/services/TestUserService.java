@@ -22,8 +22,10 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -62,15 +64,10 @@ public class TestUserService {
 
         String id = "e1938076-ec51-4b41-a5af-da58e57b578f";
 
-
-        //Test
-        //Cuando haga algo, va a recibir lo otro, simula el proceso
         Mockito.when(utilities.getRandomUuid()).thenReturn(id);
-
         Mockito.when(userRepository.save(testUser)).thenReturn(testUser);
-        //Creo la respuesta, llamando a el metodo que me la deberia dar y es el metodo que estoy probando
+
         UserAddResponse userAddResponse = userService.addUser(testUser);
-        //analizo la respuesta que quiero, con la que obtengo
         Assert.assertEquals(id, userAddResponse.getId() );
     }
 
@@ -92,6 +89,12 @@ public class TestUserService {
         Assert.assertEquals(testUser, user);
     }
 
+    @Test(expected = ResponseStatusException.class)
+    public void findByIdTestFail(){
+        String id = "e1938076-ec51-4b41-a5af-da58e57b578f";
+        Mockito.when(userRepository.findById(id)).thenReturn(Optional.empty());
+        userService.findById(id);
+    }
 
     @Test
     public void addFakeUsersTest(){
