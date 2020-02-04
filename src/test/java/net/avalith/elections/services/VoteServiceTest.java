@@ -23,13 +23,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -64,8 +67,6 @@ public class VoteServiceTest {
 
     @Test
     public void addVoteTest(){
-
-        Mockito.reset(electionService);
         Integer electionId = 1;
         String userId = "e1938076-ec51-4b41-a5af-da58e57b578f";
         BodyVote bodyVote = BodyVote.builder()
@@ -92,6 +93,7 @@ public class VoteServiceTest {
 
         election.setElectionsCandidates(Arrays.asList(electionsCandidates));
 
+        Mockito.reset(electionService);
         Mockito.when(electionService.findById(electionId)).thenReturn(election);
 
         User testUser = User.builder()
@@ -122,6 +124,86 @@ public class VoteServiceTest {
         Assert.assertEquals(new VoteResponse("Voto ingresado con éxito"), voteService.addVote(electionId, userId, bodyVote));
     }
 
+    @Test(expected = ResponseStatusException.class)
+    public void addVoteTestFail1(){
+        Mockito.reset(electionService);
+        Integer electionId = 1;
+        String userId = "e1938076-ec51-4b41-a5af-da58e57b578f";
+
+        BodyVote bodyVote = BodyVote.builder()
+                .candidateid(2)
+                .build();
+
+        Candidate candidate =Candidate.builder()
+                .name("pepe")
+                .lastName("pig")
+                .id(1)
+                .build();
+
+        Election election = Election.builder()
+                .id(1)
+                .startDate(LocalDateTime.of(2020,01,31,14,00,00))
+                .endDate(LocalDateTime.of(42069,02,28,20,00,00))
+                .build();
+
+        ElectionsCandidates electionsCandidates = ElectionsCandidates.builder()
+                .id(1)
+                .election(election)
+                .candidate(candidate)
+                .build();
+
+        election.setElectionsCandidates(Arrays.asList(electionsCandidates));
+
+        Mockito.when(electionService.findById(electionId)).thenReturn(election);
+        voteService.addVote(electionId, userId, bodyVote);
+    }
+
+    @Test(expected = ResponseStatusException.class)
+    public void addVoteTestFail2(){
+
+        Mockito.reset(electionService);
+        Integer electionId = 1;
+        String userId = "e1938076-ec51-4b41-a5af-da58e57b578f";
+        BodyVote bodyVote = BodyVote.builder()
+                .candidateid(1)
+                .build();
+
+        Candidate candidate =Candidate.builder()
+                .name("pepe")
+                .lastName("pig")
+                .id(1)
+                .build();
+
+        Election election = Election.builder()
+                .id(1)
+                .startDate(LocalDateTime.of(2020,01,31,14,00,00))
+                .endDate(LocalDateTime.of(420,02,28,20,00,00))
+                .build();
+
+        ElectionsCandidates electionsCandidates = ElectionsCandidates.builder()
+                .id(1)
+                .election(election)
+                .candidate(candidate)
+                .build();
+
+        election.setElectionsCandidates(Arrays.asList(electionsCandidates));
+
+        Mockito.when(electionService.findById(electionId)).thenReturn(election);
+
+        User testUser = User.builder()
+                .id("e1938076-ec51-4b41-a5af-da58e57b578f")
+                .name("pepe")
+                .lastName("argento")
+                .email("elpepe@argento.com")
+                .vote(Arrays.asList(EnhancedRandom.random(Vote.class)))
+                .build();
+
+        Mockito.when(userService.findById(userId)).thenReturn(testUser);
+        Mockito.when(electionService.electionInProgress(election)).thenReturn(Boolean.FALSE);
+
+        voteService.addVote(electionId, userId, bodyVote);
+    }
+
     @Test
     public void findByIdTest(){
         Integer id =1;
@@ -133,6 +215,13 @@ public class VoteServiceTest {
         Mockito.when(voteRepository.findById(id)).thenReturn(java.util.Optional.ofNullable(voteReturn));
 
         Assert.assertEquals(voteReturn, voteService.findById(id));
+    }
+
+    @Test(expected = ResponseStatusException.class)
+    public void findByIdTestFail(){
+        Integer id = 1;
+        Mockito.when(voteRepository.findById(id)).thenReturn(Optional.empty());
+        voteService.findById(id);
     }
 
     @Test
@@ -168,6 +257,7 @@ public class VoteServiceTest {
 
     @Test
     public void addFakeVotesTest(){
+        Mockito.reset(electionService);
         Integer electionId = 1;
         Candidate candidate =Candidate.builder()
                 .name("pepe")
@@ -216,8 +306,59 @@ public class VoteServiceTest {
                 .electionsCandidates(electionsCandidates)
                 .build();
 
+        Mockito.reset(voteRepository);
         Mockito.when(voteRepository.save(vote)).thenReturn(voteReturn);
 
         Assert.assertEquals(new FakeUserResponse("Votos generados correctamente"), voteService.addFakeVotes(electionId, new BodyFakeVote(1)));
+    }
+
+    @Test
+    public void addFakeVotesTestFail(){
+        Mockito.reset(electionService);
+        Integer electionId = 1;
+        Candidate candidate =Candidate.builder()
+                .name("pepe")
+                .lastName("pig")
+                .id(1)
+                .build();
+
+        Election election = Election.builder()
+                .id(1)
+                .startDate(LocalDateTime.of(2020,01,31,14,00,00))
+                .endDate(LocalDateTime.of(42069,02,28,20,00,00))
+                .build();
+
+        ElectionsCandidates electionsCandidates = ElectionsCandidates.builder()
+                .id(1)
+                .election(election)
+                .candidate(candidate)
+                .build();
+
+        election.setElectionsCandidates(List.of(electionsCandidates));
+
+        Mockito.when(electionService.findById(electionId)).thenReturn(election);
+        Mockito.when(electionService.electionInProgress(election)).thenReturn(true);
+
+        User testUser = User.builder()
+                .id("e1938076-ec51-4b41-a5af-da58e57b578f")
+                .name("pepe")
+                .lastName("argento")
+                .email("elpepe@argento.com")
+                .vote(List.of())
+                .isFake(true)
+                .build();
+
+        List<User> fakeUserList = List.of(testUser);
+
+        Mockito.reset(voteRepository);
+        Mockito.when(userService.findAllFakeUsers()).thenReturn(fakeUserList);
+
+        Vote vote = Vote.builder()
+                .user(testUser)
+                .electionsCandidates(electionsCandidates)
+                .build();
+
+        Mockito.when(voteRepository.save(vote)).thenThrow(DataIntegrityViolationException.class);
+        voteService.addFakeVotes(electionId, new BodyFakeVote(1));
     }
 }

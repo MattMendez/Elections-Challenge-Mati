@@ -23,10 +23,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.web.server.ResponseStatusException;
+
 import static org.mockito.ArgumentMatchers.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -124,6 +127,37 @@ public class TestElectionService {
         Mockito.when(electionsCandidatesService.addelectionscandidates(electionsCandidates2)).thenReturn(electionsCandidates2Return);
 
         Assert.assertEquals(id, electionService.addElection(bodyElections).getId());
+    }
+
+    @Test(expected = ResponseStatusException.class)
+    public void addElectionTestFail(){
+        BodyElections bodyElections = BodyElections.builder()
+                .starDate(LocalDateTime.of(42069,01,31,20,00,00))
+                .endDate(LocalDateTime.of(1,02,28,20,00,00))
+                .candidateId(List.of(1,2))
+                .build();
+
+        electionService.addElection(bodyElections);
+    }
+
+    @Test
+    public void findByIdTest(){
+        Integer id =1;
+        Election election = Election.builder()
+                .id(1)
+                .startDate(LocalDateTime.of(2020,01,31,14,00,00))
+                .endDate(LocalDateTime.of(42069,02,28,20,00,00))
+                .build();
+        Mockito.when(electionRepository.findById(id)).thenReturn(Optional.ofNullable(election));
+
+        Assert.assertEquals(election, electionService.findById(id));
+    }
+
+    @Test(expected = ResponseStatusException.class)
+    public void findByIdTestFail(){
+        Integer id = 1;
+        Mockito.when(electionRepository.findById(id)).thenReturn(Optional.empty());
+        electionService.findById(id);
     }
 
     @Test
