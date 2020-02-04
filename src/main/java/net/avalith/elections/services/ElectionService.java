@@ -47,7 +47,7 @@ public class ElectionService {
             candidates.stream().forEach(
                     it -> electionsCandidatesService.addelectionscandidates(ElectionsCandidates.builder().election(finalElection).candidate(it).build()));
 
-            return new ElectionResponse(election.getId());
+            return new ElectionResponse(finalElection.getId());
         }
     }
 

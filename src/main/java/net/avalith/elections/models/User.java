@@ -1,5 +1,6 @@
 package net.avalith.elections.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +43,7 @@ public class User {
     @Email(message = "El Email debe ser valido")
     private String email;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "user")

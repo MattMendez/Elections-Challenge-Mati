@@ -1,10 +1,12 @@
 package net.avalith.elections.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -38,6 +40,8 @@ public class Candidate {
     @Size(max = 30, message = "El apellido debe tener como maximo 30 caracteres")
     private String lastName;
 
+    @JsonIgnore
+    @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "candidate")

@@ -3,6 +3,7 @@ package net.avalith.elections.entities;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@Data
 public class ElectionResultsResponse {
 
     @JsonProperty("id_election")

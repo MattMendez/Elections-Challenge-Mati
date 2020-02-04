@@ -5,8 +5,10 @@ import net.avalith.elections.entities.FakeUserResponse;
 import net.avalith.elections.entities.UserAddResponse;
 import net.avalith.elections.models.User;
 import net.avalith.elections.repositories.UserRepository;
+import net.avalith.elections.utilities.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -27,10 +29,14 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private Utilities utilities;
+
+
     public UserAddResponse addUser(User user){
-        user.setId(UUID.randomUUID().toString());
+        user.setId(utilities.getRandomUuid());
         userRepository.save(user);
-        
+
         return new UserAddResponse(user.getId());
     }
 
