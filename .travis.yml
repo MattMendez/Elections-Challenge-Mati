@@ -3,3 +3,7 @@ cache:
   directories:
   - .autoconf
   - $HOME/.m2
+services:
+  - mysql
+before_install:
+  - mysql -e 'CREATE DATABASE avalith;'
