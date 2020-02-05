@@ -9,6 +9,8 @@ import net.avalith.elections.models.Election;
 import net.avalith.elections.models.ElectionsCandidates;
 import net.avalith.elections.repositories.ElectionRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -41,11 +43,13 @@ public class ElectionService {
             Election election = Election.builder()
                     .startDate(bodyElections.getStarDate())
                     .endDate(bodyElections.getEndDate())
+                    .electionsCandidates(List.of())
                     .build();
 
             Election finalElection = electionRepository.save(election);
+
             candidates.stream().forEach(
-                    it -> electionsCandidatesService.addelectionscandidates(ElectionsCandidates.builder().election(finalElection).candidate(it).build()));
+                    it -> electionsCandidatesService.addelectionscandidates(ElectionsCandidates.builder().election(finalElection).candidate(it).votes(List.of()).build()));
 
             return new ElectionResponse(finalElection.getId());
         }

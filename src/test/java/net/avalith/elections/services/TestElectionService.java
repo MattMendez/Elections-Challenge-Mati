@@ -60,74 +60,7 @@ public class TestElectionService {
     public void init() {
         MockitoAnnotations.initMocks(this);
     }
-
-    @Test
-    public void addElectionTest(){
-        BodyElections bodyElections = BodyElections.builder()
-                .starDate(LocalDateTime.of(42069,01,31,20,00,00))
-                .endDate(LocalDateTime.of(42069,02,28,20,00,00))
-                .candidateId(List.of(1,2))
-                .build();
-
-        Integer it1 =1;
-        Integer it2 =2;
-        Integer id =1;
-
-        Candidate return1 = Candidate.builder()
-                .id(1)
-                .name("pepe")
-                .lastName("pig")
-                .build();
-
-        Candidate return2 = Candidate.builder()
-                .id(2)
-                .name("pepa")
-                .lastName("pig")
-                .build();
-
-        Mockito.when(candidateService.findById(it1)).thenReturn(return1);
-        Mockito.when(candidateService.findById(it2)).thenReturn(return2);
-
-        Election saveElection = Election.builder()
-                .startDate(bodyElections.getStarDate())
-                .endDate(bodyElections.getEndDate())
-                .build();
-
-        Election saveElectionReturn = Election.builder()
-                .id(1)
-                .startDate(bodyElections.getStarDate())
-                .endDate(bodyElections.getEndDate())
-                .build();
-
-        Mockito.when(electionRepository.save(saveElection)).thenReturn(saveElectionReturn);
-
-        ElectionsCandidates electionsCandidates1 = ElectionsCandidates.builder()
-                .election(saveElectionReturn)
-                .candidate(return1)
-                .build();
-
-        ElectionsCandidates electionsCandidates2 = ElectionsCandidates.builder()
-                .election(saveElectionReturn)
-                .candidate(return2)
-                .build();
-
-        ElectionsCandidates electionsCandidates1Return = ElectionsCandidates.builder()
-                .id(1)
-                .election(saveElectionReturn)
-                .candidate(return1)
-                .build();
-
-        ElectionsCandidates electionsCandidates2Return = ElectionsCandidates.builder()
-                .id(2)
-                .election(saveElectionReturn)
-                .candidate(return2)
-                .build();
-
-        Mockito.when(electionsCandidatesService.addelectionscandidates(electionsCandidates1)).thenReturn(electionsCandidates1Return);
-        Mockito.when(electionsCandidatesService.addelectionscandidates(electionsCandidates2)).thenReturn(electionsCandidates2Return);
-
-        Assert.assertEquals(id, electionService.addElection(bodyElections).getId());
-    }
+    
 
     @Test(expected = ResponseStatusException.class)
     public void addElectionTestFail(){
