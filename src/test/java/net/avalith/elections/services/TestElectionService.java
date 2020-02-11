@@ -146,7 +146,7 @@ public class TestElectionService {
         ElectionResultsResponse electionResultsResponse = ElectionResultsResponse.builder()
                 .id(id)
                 .candidateWithVotes(List.of(candidateWithVotes))
-                .totalVotes(Long.valueOf(electionsCandidates.getVotes().size()))
+                .totalVotes((long) electionsCandidates.getVotes().size())
                 .build();
 
         Assert.assertEquals(electionResultsResponse, electionService.getResults(id));
